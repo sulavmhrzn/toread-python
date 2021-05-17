@@ -1,4 +1,3 @@
-from re import S
 import sys
 from pymongo import MongoClient
 import pymongo

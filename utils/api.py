@@ -1,9 +1,9 @@
 import datetime
 import pymongo
 from typing import List
-from toread.book import Book
-from toread.db import setup
-from toread.custom_exceptions import BookExist, BookNotFound
+from utils.book import Book
+from utils.db import setup
+from utils.custom_exceptions import BookExist, BookNotFound
 
 
 class API:
