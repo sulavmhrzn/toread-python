@@ -9,7 +9,7 @@ class Book:
         self.isbn = isbn
         self.completed = False
         self.date_added = datetime.date.today()
-        self.date_completed = None
+        self.date_completed = "Not completed yet."
 
     def asdict(self):
         return {
@@ -19,7 +19,7 @@ class Book:
             "isbn": self.isbn,
             "completed": self.completed,
             "date_added": str(self.date_added),
-            "date_completed": None,
+            "date_completed": "Not completed yet.",
         }
 
     def __eq__(self, other) -> bool:
