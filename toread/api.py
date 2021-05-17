@@ -3,6 +3,7 @@ import pymongo
 from typing import List
 from toread.book import Book
 from toread.db import setup
+from toread.custom_exceptions import BookExist, BookNotFound
 
 
 class API:
@@ -25,7 +26,7 @@ class API:
         """
         if book_title:
             if not self._search_book(book_title):
-                return "Book with that title was not found."
+                raise BookNotFound("Book with that title was not found.")
             return self._search_book(book_title)
 
         return self._get()
@@ -54,12 +55,12 @@ class API:
         """
         book = Book(title, author, page, isbn)
         try:
-            if len(self._search_book(title)) > 0:
-                return "Book with that title already exist."
+            if self._search_book(title):
+                raise BookExist("Book with that title already exist.")
             self.db.insert_one(book.asdict())
         except pymongo.errors.WriteError as err:
             raise err
-        return book
+        return "Successfully created."
 
     def update(self, book_title, key, value) -> Book:
         """
@@ -68,10 +69,10 @@ class API:
         """
         book = self._search_book(book_title)
         if not key in book.keys():
-            return f"{key} not found."
+            raise KeyError(f"{key} not found.")
 
         if not book:
-            return "Book with that title was not found."
+            raise BookNotFound("Book with that title was not found.")
 
         self.db.update_one({"title": book_title}, {"$set": {key: value}})
         return "Successfully updated."
@@ -82,7 +83,7 @@ class API:
         """
         book = self._search_book(book_title)
         if not book:
-            return "Book with that title was not found."
+            raise BookNotFound("Book with that title was not found.")
         self.db.delete_one({"title": book_title})
         return "Successfully deleted"
 
@@ -92,7 +93,7 @@ class API:
         """
         book = self._search_book(book_title)
         if not book:
-            return "Book with that title was not found."
+            raise BookNotFound("Book with that title was not found.")
         self.db.update_one(
             {"title": book_title},
             {"$set": {"completed": True, "date_completed": str(datetime.date.today())}},
