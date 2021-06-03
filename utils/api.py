@@ -4,6 +4,7 @@ from typing import List
 from utils.book import Book
 from utils.db import setup
 from utils.custom_exceptions import BookExist, BookNotFound
+from dataclasses import asdict
 
 
 class API:
@@ -57,7 +58,7 @@ class API:
         try:
             if self._search_book(title):
                 raise BookExist("Book with that title already exist.")
-            self.db.insert_one(book.asdict())
+            self.db.insert_one(asdict(book))
         except pymongo.errors.WriteError as err:
             raise err
         return "Successfully created."
